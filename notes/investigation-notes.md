@@ -4,7 +4,8 @@
 
 The **Brutus** Sherlock challenge focuses on investigating suspicious activity through Linux authentication and system logs. The scenario involves a Confluence server whose SSH service was brute-forced, followed by additional attacker activity.
 
-![Brutus Sherlock challenge overview](../screenshots/01-brutus-challenge.png)
+<img width="1920" height="1200" alt="Screenshot (83)" src="https://github.com/user-attachments/assets/8d4773c7-5229-4016-a205-78a60476396d" />
+
 
 ---
 
