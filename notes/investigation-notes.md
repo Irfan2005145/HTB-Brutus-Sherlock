@@ -15,7 +15,8 @@ The `auth.log` evidence shows repeated failed SSH authentication attempts from *
 
 The logs also show subsequent sessions and account-related activity that help reconstruct the attack timeline.
 
-![Authentication log analysis](../screenshots/02-auth-log-analysis.png)
+<img width="1920" height="1200" alt="Screenshot (88)" src="https://github.com/user-attachments/assets/71a42753-2a31-4677-8a8b-c27ece4e1097" />
+
 
 ### Key observations
 
@@ -35,7 +36,8 @@ The corresponding MITRE ATT&CK technique is:
 
 **T1136.001 — Create Account: Local Account**
 
-![MITRE ATT&CK T1136.001 — Create Account](../screenshots/03-mitre-attack.png)
+<img width="1920" height="1200" alt="Screenshot (87)" src="https://github.com/user-attachments/assets/e8fb1414-1d9b-4599-9b15-30b6252416d2" />
+
 
 ### Why this matters
 
@@ -47,7 +49,8 @@ Creating an additional account can provide an attacker with secondary access to 
 
 The command evidence shows privileged commands executed through `sudo` by the `cyberjunkie` account.
 
-![Command analysis from auth.log](../screenshots/04-command-analysis.png)
+<img width="1920" height="1200" alt="Screenshot (86)" src="https://github.com/user-attachments/assets/630630f7-e741-431b-a60c-f37806887afd" />
+
 
 ### Observed commands
 
@@ -71,7 +74,8 @@ The `curl` command downloads the `linper.sh` script from GitHub and is executed 
 
 The challenge answers were validated successfully. The evidence includes the MITRE ATT&CK sub-technique, the end time of the attacker's first SSH session, and the full privileged command used to download the script.
 
-![Completed Sherlock tasks](../screenshots/05-completed-tasks.png)
+<img width="1920" height="1200" alt="Screenshot (89)" src="https://github.com/user-attachments/assets/e17081f2-331f-4237-8810-b231bb73019b" />
+
 
 ### Important confirmed result
 
@@ -89,19 +93,8 @@ The privileged download command was:
 
 ---
 
-## 6. Sherlock Completion
 
-The final screen confirms that the **Brutus Sherlock was successfully solved**.
-
-![Brutus Sherlock successfully completed](../screenshots/06-sherlock-completed.png)
-
-**Solve date:** 27 Aug 2026  
-**XP earned:** 195  
-**Sherlock rank:** #37621
-
----
-
-## 7. Investigation Summary
+## 6. Investigation Summary
 
 The investigation can be summarized as follows:
 
